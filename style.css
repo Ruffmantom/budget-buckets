@@ -1,0 +1,61 @@
+@import url("https://use.typekit.net/wnb1tjk.css");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+svg {
+  fill: var(--slate-200);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--slate-950);
+  color: var(--slate-100);
+  font-family: "poppins","Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+.icon-btn .icon {
+  width: 0.85rem;
+  height: 0.85rem;
+  display: block;
+  fill: currentColor;
+}
+:root {
+  --slate-950: #020617;
+  --slate-900: #0f172a;
+  --slate-800: #1e293b;
+  --slate-500: #64748b;
+  --slate-400: #94a3b8;
+  --slate-200: #e2e8f0;
+  --slate-100: #f1f5f9;
+  --rose-500: #f43f5e;
+  --rose-300: #fda4af;
+  --rose-200: #fecdd3;
+  --emerald-400: #34d399;
+  --emerald-300: #6ee7b7;
+  --emerald-200: #a7f3d0;
+  --sky-400: #38bdf8;
+  --sky-200: #bae6fd;
+  --amber-400: #fbbf24;
+  --amber-200: #fde68a;
+  --pink-400: #f472b6;
+  --pink-200: #fbcfe8;
+  --shadow-color: rgba(15, 23, 42, 0.5);
+  --ring-color: rgba(52, 211, 153, 0.35);
+}

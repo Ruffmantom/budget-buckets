@@ -1,0 +1,228 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#020617" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="assets/icons/icon-64.png" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="tailwind.js"></script>
+    <title>Budget Buckets</title>
+  </head>
+  <body class="bg-slate-950 text-slate-100 font-sans antialiased">
+    <noscript>
+      <div class="p-4 text-center text-sm text-rose-200 bg-rose-500/10">
+        This budgeting app needs JavaScript to run.
+      </div>
+    </noscript>
+    <div
+      id="settingsModal"
+      class="fixed inset-0 z-50 hidden items-center justify-center p-6 sm:p-10"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="settingsModalTitle"
+    >
+      <div
+        class="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+        data-close-settings
+      ></div>
+      <div
+        class="relative w-full max-w-lg space-y-6 rounded-3xl border border-white/10 bg-slate-950/95 p-6 shadow-2xl shadow-black/40"
+      >
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <p class="text-[0.6rem] uppercase tracking-[0.4em] text-slate-400">
+              Settings
+            </p>
+            <h2 id="settingsModalTitle" class="text-xl font-semibold">
+              Budget preferences
+            </h2>
+            <p class="text-sm text-slate-500">
+              Manage exports and import saved plans.
+            </p>
+          </div>
+          <button
+            type="button"
+            class="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-slate-950/40 text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
+            data-close-settings
+            aria-label="Close settings"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="16"
+              viewBox="0 0 24 24"
+              width="16"
+              fill="currentColor"
+            >
+              <path
+                d="M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 1 0 5.7 7.11L10.59 12l-4.9 4.89a1 1 0 1 0 1.41 1.42L12 13.41l4.89 4.9a1 1 0 0 0 1.42-1.42L13.41 12l4.9-4.89a1 1 0 0 0-.01-1.4Z"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="space-y-4">
+          <section
+            class="space-y-3 rounded-2xl border border-white/5 bg-slate-950/40 p-4"
+          >
+            <div class="space-y-1">
+              <p
+                class="text-[0.6rem] uppercase tracking-[0.4em] text-slate-400"
+              >
+                Export
+              </p>
+              <p class="text-sm text-slate-400">
+                Download everything you have assigned as a CSV for safekeeping.
+              </p>
+            </div>
+            <button
+              id="downloadCsvButton"
+              type="button"
+              class="w-full rounded-2xl bg-emerald-400/90 px-5 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-slate-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
+            >
+              Download CSV
+            </button>
+          </section>
+          <section
+            class="space-y-3 rounded-2xl border border-white/5 bg-slate-950/40 p-4"
+          >
+            <div class="space-y-1">
+              <p
+                class="text-[0.6rem] uppercase tracking-[0.4em] text-slate-400"
+              >
+                Import
+              </p>
+              <p class="text-sm text-slate-400">
+                Bring back a CSV snapshot exported from this planner.
+              </p>
+            </div>
+            <button
+              id="importCsvButton"
+              type="button"
+              class="w-full rounded-2xl border border-white/10 bg-slate-950/50 px-5 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
+            >
+              Import CSV
+            </button>
+            <input
+              id="importCsvInput"
+              type="file"
+              accept=".csv,text/csv"
+              class="sr-only"
+            />
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="min-h-screen max-w-xl mx-auto pb-24">
+      <header
+        class="sticky top-0 z-10 px-4 py-4 space-y-4 border-b border-white/5 bg-slate-950/95 backdrop-blur shadow-lg shadow-black/20"
+      >
+        <div>
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img src="./assets/images/app-logo.png" class="w-15" alt="" />
+                <h2 class="text-1xl font-semibold">Budget Buckets</h2>
+              </div>
+
+              <button
+                id="settingsButton"
+                type="button"
+                class="flex h-8 w-8 items-center justify-center rounded-sm border border-white/10 bg-slate-950/40 text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
+                aria-label="Open settings"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="20"
+                  viewBox="0 -960 960 960"
+                  width="20"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div class="flex items-end justify-between">
+              <p
+                class="text-[0.65rem] uppercase tracking-[0.45em] text-slate-500"
+              >
+                Budget Overview
+              </p>
+              <p class="text-xs text-slate-500">v1.0.0</p>
+            </div>
+          </div>
+        </div>
+        <div
+          id="summaryCards"
+          class="grid w-full grid-cols-1 gap-3 text-left text-sm sm:grid-cols-3"
+        >
+          <div
+            class="min-w-0 rounded-md border border-white/10 bg-slate-900/90 px-3 py-3 shadow-lg shadow-black/40 backdrop-blur"
+          >
+            <p class="text-xs uppercase tracking-[0.3em] text-slate-400">
+              Income
+            </p>
+            <p
+              id="summary-income"
+              class="break-words text-lg font-semibold leading-tight"
+            >
+              $0.00
+            </p>
+          </div>
+          <div
+            class="min-w-0 rounded-md border border-white/10 bg-slate-900/90 px-3 py-3 shadow-lg shadow-black/40 backdrop-blur"
+          >
+            <p class="text-xs uppercase tracking-[0.3em] text-slate-400">
+              Allocated
+            </p>
+            <p
+              id="summary-allocated"
+              class="break-words text-lg font-semibold leading-tight"
+            >
+              $0.00
+            </p>
+          </div>
+          <div
+            class="min-w-0 rounded-md border border-white/10 bg-slate-900/90 px-3 py-3 shadow-lg shadow-black/40 backdrop-blur"
+          >
+            <p class="text-xs uppercase tracking-[0.3em] text-slate-400">
+              Remaining
+            </p>
+            <p
+              id="summary-remaining"
+              class="break-words text-lg font-semibold leading-tight text-slate-100"
+            >
+              $0.00
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <main id="categories" class="px-4 py-6 space-y-4"></main>
+
+      <section class="px-4 pb-12">
+        <div
+          id="budget-status-card"
+          class="rounded-3xl border border-white/5 bg-gradient-to-br from-slate-900/80 to-slate-900/30 px-5 py-6 space-y-2 shadow-xl shadow-black/30"
+        >
+          <p
+            id="budget-status-label"
+            class="text-xs uppercase tracking-[0.35em] text-slate-400"
+          >
+            Welcome
+          </p>
+          <p id="budget-status-amount" class="text-3xl font-semibold">$0.00</p>
+          <p id="budget-status-detail" class="text-sm text-slate-400">
+            Start by entering your monthly net income.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
