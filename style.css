@@ -12,16 +12,8 @@ ul {
 }
 
 svg {
-  fill: var(--slate-200);
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background-color: var(--slate-950);
-  color: var(--slate-100);
-  font-family: "poppins","Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  line-height: 1.5;
+  fill: currentColor;
+  color: inherit;
 }
 
 img,
@@ -30,12 +22,8 @@ svg {
   max-width: 100%;
 }
 
-.icon-btn .icon {
-  width: 0.85rem;
-  height: 0.85rem;
-  display: block;
-  fill: currentColor;
-}
+
+
 :root {
   --slate-950: #020617;
   --slate-900: #0f172a;
@@ -44,18 +32,124 @@ svg {
   --slate-400: #94a3b8;
   --slate-200: #e2e8f0;
   --slate-100: #f1f5f9;
+  --rose-800: hsl(350, 89%, 20%);
   --rose-500: #f43f5e;
   --rose-300: #fda4af;
   --rose-200: #fecdd3;
+  --emerald-800: hsl(158, 64%, 22%);
   --emerald-400: #34d399;
   --emerald-300: #6ee7b7;
   --emerald-200: #a7f3d0;
+  --sky-800: hsl(198, 93%, 20%);
   --sky-400: #38bdf8;
   --sky-200: #bae6fd;
+  --amber-800: hsl(43, 96%, 26%);
   --amber-400: #fbbf24;
   --amber-200: #fde68a;
+  --pink-400: hsl(329, 86%, 20%);
   --pink-400: #f472b6;
   --pink-200: #fbcfe8;
   --shadow-color: rgba(15, 23, 42, 0.5);
   --ring-color: rgba(52, 211, 153, 0.35);
+  --body-bg: #020617;
+  --body-text: #f8fafc;
+}
+
+:root[data-theme='light'] {
+  --body-bg: #f8fafc;
+  --body-text: #020617;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--body-bg);
+  color: var(--body-text);
+  font-family: "poppins", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+html[data-theme='light'] .bg-slate-950,
+html[data-theme='light'] .bg-slate-950\/50,
+html[data-theme='light'] .bg-slate-950\/40,
+html[data-theme='light'] .bg-slate-950\/80,
+html[data-theme='light'] .bg-slate-950\/95,
+html[data-theme='light'] .bg-slate-950\/30 {
+  background-color: rgba(248, 250, 252, 0.9) !important;
+  color: #0f172a;
+  fill: #0f172a;
+}
+
+html[data-theme='light'] .bg-slate-900\/60,
+html[data-theme='light'] .bg-slate-900\/30 {
+  background-color: rgba(226, 232, 240, 1) !important;
+  color: #0f172a;
+}
+
+html[data-theme='light'] .border-white\/5 {
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+html[data-theme='light'] .border-white\/10 {
+  border-color: rgba(15, 23, 42, 0.15) !important;
+}
+
+html[data-theme='light'] .text-slate-100,
+html[data-theme='light'] .text-slate-200 {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] .text-slate-400 {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] .text-slate-500 {
+  color: #334155 !important;
+}
+
+html[data-theme='light'] .to-slate-900\/80 {
+  --tw-gradient-to: color-mix(in oklab, var(--color-white) 50%, transparent);
+}
+
+html[data-theme='light'] .from-slate-900\/80 {
+  --tw-gradient-from: color-mix(in oklab, var(--color-slate-100) 50%, transparent);
+}
+
+html[data-theme='light'] .icon-btn{
+  color: var(--color-slate-950) !important
+}
+
+html[data-theme='light'] .bg-emerald-400\/15.text-emerald-200{
+  color: var(--emerald-800) !important;
+  background-color: var(--color-emerald-400) !important
+}
+html[data-theme='light'] .bg-sky-400\/15.text-sky-200{
+  color: var(--sky-800) !important;
+  background-color: var(--color-sky-400) !important
+}
+html[data-theme='light'] .bg-amber-400\/15.text-amber-200{
+  color: var(--amber-800) !important;
+  background-color: var(--color-amber-400) !important
+}
+html[data-theme='light'] .bg-pink-400\/15.text-pink-200{
+  color: var(--pink-800) !important;
+  background-color: var(--color-pink-400) !important
+}
+
+html[data-theme='light'] .bg-rose-500\/10.text-rose-200{
+  color: var(--rose-800) !important;
+  background-color: var(--rose-300) !important
+}
+
+
+
+
+
+
+
+.icon-btn .icon {
+  width: 0.85rem;
+  height: 0.85rem;
+  display: block;
+  fill: currentColor;
 }

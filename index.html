@@ -1,6 +1,6 @@
 <!-- index.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,6 +8,12 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" href="assets/icons/icon-64.png" />
     <link rel="stylesheet" href="style.css" />
+    <script>
+      window.tailwind = window.tailwind || {};
+      window.tailwind.config = {
+        darkMode: "class",
+      };
+    </script>
     <script src="tailwind.js"></script>
     <title>Budget Buckets</title>
   </head>
@@ -19,7 +25,7 @@
     </noscript>
     <div
       id="settingsModal"
-      class="fixed inset-0 z-50 hidden items-center justify-center p-6 sm:p-10"
+      class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-10"
       role="dialog"
       aria-modal="true"
       aria-labelledby="settingsModalTitle"
@@ -29,15 +35,16 @@
         data-close-settings
       ></div>
       <div
-        class="relative w-full max-w-lg space-y-6 rounded-3xl border border-white/10 bg-slate-950/95 p-6 shadow-2xl shadow-black/40"
+        class="flex flex-col gap-2 relative w-full h-full max-w-lg space-y-3 rounded-md border border-white/10 bg-slate-950/95 p-4"
       >
+        <!-- header -->
         <div class="flex items-start justify-between gap-3">
           <div>
             <p class="text-[0.6rem] uppercase tracking-[0.4em] text-slate-400">
               Settings
             </p>
             <h2 id="settingsModalTitle" class="text-xl font-semibold">
-              Budget preferences
+              Preferences
             </h2>
             <p class="text-sm text-slate-500">
               Manage exports and import saved plans.
@@ -45,7 +52,7 @@
           </div>
           <button
             type="button"
-            class="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-slate-950/40 text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
+            class="flex h-8 w-8 items-center justify-center rounded-sm border border-white/10 bg-slate-950/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
             data-close-settings
             aria-label="Close settings"
           >
@@ -62,62 +69,105 @@
             </svg>
           </button>
         </div>
-        <div class="space-y-4">
-          <section
-            class="space-y-3 rounded-2xl border border-white/5 bg-slate-950/40 p-4"
-          >
-            <div class="space-y-1">
-              <p
-                class="text-[0.6rem] uppercase tracking-[0.4em] text-slate-400"
-              >
-                Export
-              </p>
-              <p class="text-sm text-slate-400">
-                Download everything you have assigned as a CSV for safekeeping.
-              </p>
-            </div>
-            <button
-              id="downloadCsvButton"
-              type="button"
-              class="w-full rounded-2xl bg-emerald-400/90 px-5 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-slate-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
+        <!-- settings setion -->
+        <div class="grow flex flex-col justify-between">
+          <div class="space-y-3 overflow-y-auto">
+            <section
+              class="space-y-2 rounded-sm border border-white/5 bg-slate-950/40 p-2"
             >
-              Download CSV
-            </button>
-          </section>
-          <section
-            class="space-y-3 rounded-2xl border border-white/5 bg-slate-950/40 p-4"
-          >
-            <div class="space-y-1">
-              <p
-                class="text-[0.6rem] uppercase tracking-[0.4em] text-slate-400"
+              <div class="space-y-1">
+                <p
+                  class="text-[0.6rem] uppercase tracking-[0.4em] text-slate-400"
+                >
+                  Appearance
+                </p>
+                <p class="text-sm text-slate-400">
+                  Toggle between light and dark mode.
+                </p>
+              </div>
+              <button
+                id="themeToggleButton"
+                type="button"
+                class="flex w-full items-center justify-between rounded-md border border-white/10 bg-slate-950/40 px-4 py-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
               >
-                Import
-              </p>
-              <p class="text-sm text-slate-400">
-                Bring back a CSV snapshot exported from this planner.
-              </p>
-            </div>
-            <button
-              id="importCsvButton"
-              type="button"
-              class="w-full rounded-2xl border border-white/10 bg-slate-950/50 px-5 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
+                <span
+                  id="themeToggleLabel"
+                  class="text-sm font-medium text-slate-200"
+                >
+                  Dark mode
+                </span>
+                <span
+                  id="themeToggleTrack"
+                  class="inline-flex h-7 w-14 items-center rounded-sm bg-slate-800/70 px-1 transition-colors duration-200 ease-out"
+                >
+                  <span
+                    data-theme-toggle-knob
+                    class="block h-5 w-5 rounded-xs bg-white shadow-xs transition-transform duration-200 ease-out"
+                  ></span>
+                </span>
+              </button>
+            </section>
+            <section
+              class="space-y-2 rounded-sm border border-white/5 bg-slate-950/40 p-2"
             >
-              Import CSV
-            </button>
-            <input
-              id="importCsvInput"
-              type="file"
-              accept=".csv,text/csv"
-              class="sr-only"
-            />
-          </section>
+              <div class="space-y-1">
+                <p
+                  class="text-[0.6rem] uppercase tracking-[0.4em] text-slate-400"
+                >
+                  Export
+                </p>
+                <p class="text-sm text-slate-400">
+                  Download everything you have assigned as a CSV for
+                  safekeeping.
+                </p>
+              </div>
+              <button
+                id="downloadCsvButton"
+                type="button"
+                class="w-full rounded-sm bg-emerald-400/90 px-5 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-slate-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
+              >
+                Download CSV
+              </button>
+            </section>
+            <section
+              class="space-y-2 rounded-sm border border-white/5 bg-slate-950/40 p-2"
+            >
+              <div class="space-y-1">
+                <p
+                  class="text-[0.6rem] uppercase tracking-[0.4em] text-slate-400"
+                >
+                  Import
+                </p>
+                <p class="text-sm text-slate-400">
+                  Bring back a CSV snapshot exported from this planner.
+                </p>
+              </div>
+              <button
+                id="importCsvButton"
+                type="button"
+                class="w-full rounded-sm border border-white/10 bg-slate-950/50 px-5 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200"
+              >
+                Import CSV
+              </button>
+              <input
+                id="importCsvInput"
+                type="file"
+                accept=".csv,text/csv"
+                class="sr-only"
+              />
+            </section>
+          </div>
+          <div class="flex justify-between">
+            <p class="text-xs text-slate-500">Current App Version</p>
+            <p class="text-xs text-slate-500">v1.1.0</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="min-h-screen max-w-xl mx-auto pb-24">
+    <div class="min-h-screen max-w-xl mx-auto pb-12">
       <header
-        class="sticky top-0 z-10 px-4 py-4 space-y-4 border-b border-white/5 bg-slate-950/95 backdrop-blur shadow-lg shadow-black/20"
+        class="sticky top-0 z-10 px-4 py-4 space-y-4 border-b border-white/5 bg-slate-950/95 backdrop-blur shadow-xs shadow-black/20"
       >
         <div>
           <div class="flex flex-col gap-2">
@@ -152,49 +202,42 @@
               >
                 Budget Overview
               </p>
-              <p class="text-xs text-slate-500">v1.0.0</p>
             </div>
           </div>
         </div>
         <div
           id="summaryCards"
-          class="grid w-full grid-cols-1 gap-3 text-left text-sm sm:grid-cols-3"
+          class="grid w-full gap-3 text-left text-sm grid-cols-3"
         >
-          <div
-            class="min-w-0 rounded-md border border-white/10 bg-slate-900/90 px-3 py-3 shadow-lg shadow-black/40 backdrop-blur"
-          >
-            <p class="text-xs uppercase tracking-[0.3em] text-slate-400">
+          <div class="border-r border-r-white/10">
+            <p class="text-xs uppercase tracking-[0.2em] text-slate-400">
               Income
             </p>
             <p
               id="summary-income"
-              class="break-words text-lg font-semibold leading-tight"
+              class="text-xs break-words text-lg font-semibold leading-tight"
             >
               $0.00
             </p>
           </div>
-          <div
-            class="min-w-0 rounded-md border border-white/10 bg-slate-900/90 px-3 py-3 shadow-lg shadow-black/40 backdrop-blur"
-          >
-            <p class="text-xs uppercase tracking-[0.3em] text-slate-400">
+          <div class="border-r border-r-white/10">
+            <p class="text-xs uppercase tracking-[0.2em] text-slate-400">
               Allocated
             </p>
             <p
               id="summary-allocated"
-              class="break-words text-lg font-semibold leading-tight"
+              class="text-xs break-words text-lg font-semibold leading-tight"
             >
               $0.00
             </p>
           </div>
-          <div
-            class="min-w-0 rounded-md border border-white/10 bg-slate-900/90 px-3 py-3 shadow-lg shadow-black/40 backdrop-blur"
-          >
-            <p class="text-xs uppercase tracking-[0.3em] text-slate-400">
+          <div class="">
+            <p class="text-xs uppercase tracking-[0.2em] text-slate-400">
               Remaining
             </p>
             <p
               id="summary-remaining"
-              class="break-words text-lg font-semibold leading-tight text-slate-100"
+              class="text-xs break-words text-lg font-semibold leading-tight text-slate-100"
             >
               $0.00
             </p>
@@ -204,10 +247,10 @@
 
       <main id="categories" class="px-4 py-6 space-y-4"></main>
 
-      <section class="px-4 pb-12">
+      <section class="px-4 pb-12 overflow-hidden">
         <div
           id="budget-status-card"
-          class="rounded-3xl border border-white/5 bg-gradient-to-br from-slate-900/80 to-slate-900/30 px-5 py-6 space-y-2 shadow-xl shadow-black/30"
+          class="rounded-md bg-gradient-to-br from-slate-900/80 to-slate-900/30 px-5 py-6 space-y-2 shadow-sm shadow-black/15"
         >
           <p
             id="budget-status-label"
@@ -221,6 +264,9 @@
           </p>
         </div>
       </section>
+      <p class="text-xs text-center text-slate-500">
+        © Budget Buckets - v1.1.0
+      </p>
     </div>
 
     <script type="module" src="app.js"></script>

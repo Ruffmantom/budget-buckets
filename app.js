@@ -35,6 +35,7 @@ const state = categories.reduce((acc, category) => {
 const openState = new Map([['income', true]]);
 const STORAGE_KEY = 'budget-buckets-state-v1';
 let activeEdit = null;
+let themePreference = 'dark';
 
 const currency = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -60,6 +61,12 @@ const settingsCloseEls = document.querySelectorAll('[data-close-settings]');
 const downloadCsvButton = document.getElementById('downloadCsvButton');
 const importCsvButton = document.getElementById('importCsvButton');
 const importCsvInput = document.getElementById('importCsvInput');
+const themeToggleButton = document.getElementById('themeToggleButton');
+const themeToggleLabel = document.getElementById('themeToggleLabel');
+const themeToggleTrack = document.getElementById('themeToggleTrack');
+const themeToggleKnob = document.querySelector('[data-theme-toggle-knob]');
+
+applyTheme(themePreference);
 
 function formatCurrency(value) {
   return currency.format(Number.isFinite(value) ? value : 0);
@@ -114,13 +121,12 @@ function persistState() {
         ? openState.get(category.id)
         : fallback;
     });
-    console.log('[Persist] Buckets:', buckets);
-    console.log('[Persist] Open states:', openSnapshot);
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
         buckets,
-        open: openSnapshot
+        open: openSnapshot,
+        theme: themePreference
       })
     );
   } catch (error) {
@@ -146,10 +152,10 @@ function hydrateState() {
       hasWrapper && parsed.open && typeof parsed.open === 'object'
         ? parsed.open
         : null;
+    const storedTheme =
+      hasWrapper && typeof parsed.theme === 'string' ? parsed.theme : null;
 
-    console.log('[Hydrate] Raw payload:', parsed);
-
-    let changed = !hasWrapper || !openSnapshot;
+    let changed = !hasWrapper || !openSnapshot || !storedTheme;
 
     categories.forEach((category) => {
       const bucket = Array.isArray(bucketsSource?.[category.id])
@@ -195,13 +201,14 @@ function hydrateState() {
       categories.forEach((category) => {
         if (typeof openSnapshot[category.id] === 'boolean') {
           openState.set(category.id, openSnapshot[category.id]);
-          console.log(
-            `[Hydrate] Restored open state for ${category.id}:`,
-            openSnapshot[category.id]
-          );
         }
       });
     }
+
+    const normalizedTheme =
+      storedTheme && storedTheme.toLowerCase() === 'light' ? 'light' : 'dark';
+    themePreference = normalizedTheme;
+    applyTheme(themePreference);
 
     if (changed) {
       persistState();
@@ -209,6 +216,39 @@ function hydrateState() {
   } catch (error) {
     console.warn('Unable to load saved budget data', error);
   }
+}
+
+function applyTheme(nextTheme) {
+  themePreference = nextTheme === 'light' ? 'light' : 'dark';
+  const root = document.documentElement;
+  root.dataset.theme = themePreference;
+  root.classList.toggle('dark', themePreference === 'dark');
+  updateThemeToggleUI();
+}
+
+function updateThemeToggleUI() {
+  if (!themeToggleButton) return;
+  const isLight = themePreference === 'light';
+  const label = isLight ? 'Light mode' : 'Dark mode';
+  if (themeToggleLabel) {
+    themeToggleLabel.textContent = label;
+  }
+  if (themeToggleTrack) {
+    themeToggleTrack.style.backgroundColor = isLight
+      ? 'rgba(16, 185, 129, 0.6)'
+      : 'rgba(15, 23, 42, 0.7)';
+  }
+  if (themeToggleKnob) {
+    themeToggleKnob.style.transform = isLight ? 'translateX(1.75rem)' : 'translateX(0)';
+    themeToggleKnob.style.backgroundColor = isLight ? '#0f172a' : '#f8fafc';
+  }
+  themeToggleButton.setAttribute('aria-pressed', isLight ? 'false' : 'true');
+}
+
+function toggleThemePreference() {
+  const nextTheme = themePreference === 'dark' ? 'light' : 'dark';
+  applyTheme(nextTheme);
+  persistState();
 }
 
 function openSettingsModal() {
@@ -529,10 +569,10 @@ function renderCategories() {
         : `<li class="rounded-sm border border-dashed border-slate-800/60 px-4 py-4 text-center text-xs text-slate-500">No items added yet.</li>`;
 
       return `
-        <details data-category="${category.id}" data-panel-id="${category.id}" class="group rounded-3xl border border-white/5 bg-slate-900/60 shadow-xl shadow-black/30" ${
+        <details data-category="${category.id}" data-panel-id="${category.id}" class="group rounded-md border overflow-hidden border-white/5 bg-slate-900/60 shadow-sm shadow-black/15" ${
           isOpen ? 'open' : ''
         }>
-          <summary data-panel-id="${category.id}" class="flex cursor-pointer select-none items-center justify-between gap-3 px-4 py-4 focus:outline-none">
+          <summary data-panel-id="${category.id}" class="flex cursor-pointer overflow-hidden select-none items-center justify-between gap-3 px-4 py-4 focus:outline-none">
             <div>
               <p class="text-[0.6rem] uppercase tracking-[0.4em] text-slate-400">${category.title}</p>
               <p class="text-2xl font-semibold">${formatCurrency(total)}</p>
@@ -778,6 +818,10 @@ if (importCsvButton) {
 
 if (importCsvInput) {
   importCsvInput.addEventListener('change', handleImportInputChange);
+}
+
+if (themeToggleButton) {
+  themeToggleButton.addEventListener('click', toggleThemePreference);
 }
 
 document.addEventListener('keydown', handleKeydown);
