@@ -72,6 +72,7 @@ body {
 html[data-theme='light'] .bg-slate-950,
 html[data-theme='light'] .bg-slate-950\/50,
 html[data-theme='light'] .bg-slate-950\/40,
+html[data-theme='light'] .bg-slate-950\/60,
 html[data-theme='light'] .bg-slate-950\/80,
 html[data-theme='light'] .bg-slate-950\/95,
 html[data-theme='light'] .bg-slate-950\/30 {
@@ -81,6 +82,7 @@ html[data-theme='light'] .bg-slate-950\/30 {
 }
 
 html[data-theme='light'] .bg-slate-900\/60,
+html[data-theme='light'] .bg-slate-900\/40,
 html[data-theme='light'] .bg-slate-900\/30 {
   background-color: rgba(226, 232, 240, 1) !important;
   color: #0f172a;

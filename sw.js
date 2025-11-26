@@ -1,6 +1,15 @@
 // sw.js
-const CACHE_NAME = 'budgetpwa-v4';
-const APP_SHELL = ['./', './index.html', './app.js', './manifest.webmanifest'];
+const CACHE_NAME = 'budgetpwa-v6';
+const APP_SHELL = [
+  './',
+  './index.html',
+  './accounting.html',
+  './app.js',
+  './accounting.js',
+  './style.css',
+  './tailwind.js',
+  './manifest.webmanifest'
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
