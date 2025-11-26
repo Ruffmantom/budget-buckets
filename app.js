@@ -35,7 +35,7 @@ const state = categories.reduce((acc, category) => {
 const openState = new Map([['income', true]]);
 const STORAGE_KEY = 'budget-buckets-state-v1';
 let activeEdit = null;
-let themePreference = 'dark';
+let themePreference = 'light';
 
 const currency = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -270,8 +270,11 @@ function hydrateState() {
       }
     });
 
-    const normalizedTheme =
-      storedTheme && storedTheme.toLowerCase() === 'light' ? 'light' : 'dark';
+    const normalizedTheme = storedTheme
+      ? storedTheme.toLowerCase() === 'light'
+        ? 'light'
+        : 'dark'
+      : 'light';
     themePreference = normalizedTheme;
     applyTheme(themePreference);
 

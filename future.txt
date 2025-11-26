@@ -1,0 +1,2 @@
+Future tutorial note:
+- Expense section helper text that was removed from the UI: "Pick the bucket the expense will reduce, then enter the amount."
