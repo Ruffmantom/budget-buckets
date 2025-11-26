@@ -1,0 +1,56 @@
+# ---------------------
+# Root Level
+# ---------------------
+node_modules/
+#.env        # Uncomment these for dev and production   
+#.env.*      # Catch variants like .env.production, .env.local
+dist/
+build/
+.DS_Store   # macOS specific hidden file
+*.log       # Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json  # optional: ignore if you use yarn.lock or want clean PRs
+.pnpm-debug.log*
+
+# Optional: OS-specific files
+Thumbs.db          # Windows image cache
+ehthumbs.db        # Windows thumbnail cache
+Desktop.ini        # Windows desktop settings
+
+# Optional: IDE/editor files
+.vscode/
+.idea/
+*.swp              # Vim
+*.swo              # Vim
+*.sublime*
+*.code-workspace
+
+# ---------------------
+# Client Specific
+# ---------------------
+/client/node_modules/
+# client/.env           # Uncomment this for Dev and Production
+client/dist/
+client/build/
+client/.cache/
+client/.DS_Store
+
+# Optional: Vite cache
+client/.vite/
+client/.vitepress/
+
+# Optional: React test coverage
+client/coverage/
+
+# ---------------------
+# Server Specific
+# ---------------------
+/server/node_modules/
+# server/.env            # Uncomment this for Dev and Production
+server/.DS_Store
+server/dist/
+server/build/
+server/coverage/
+server/logs/

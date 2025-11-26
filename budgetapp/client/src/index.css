@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Outfit:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+/* 
+Importing fonts:
+Roboto
+Montserrat
+Lato
+Outfit
+*/
+
+@layer base {
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Outfit", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+    }
+}
+
+
+
+
+.active_tooltip {
+    anchor-name: --tooltip;
+}
+
+.tool_tip {
+    position: absolute;
+    position-anchor: --tooltip;
+    position-try-fallbacks: --bottom;
+    margin: auto 7px;
+    transform: translate(0, -50%);
+    white-space: nowrap;
+    transition: opacity 100ms ease-in;
+    opacity: 1;
+    z-index: 9;
+}
+
+.ttr {
+    left: anchor(right);
+}
+
+.ttl {
+    right: anchor(left);
+}
+
+.ttlc {
+    left: anchor(50%);
+}
+
+.ttrc {
+    right: anchor(50%);
+}
+
+
+.tttc {
+    top: anchor(50%);
+}
+
+.ttt {
+    bottom: anchor(top);
+}
+
+.ttb {
+    top: anchor(bottom);
+}
+
+
+@position-try --bottom {
+    left: anchor(right);
+    right: unset;
+}
