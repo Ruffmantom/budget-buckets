@@ -7,10 +7,13 @@ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import passportConfig from "./config/passport.js";
-
-// import connectDB from './config/db.js';           // DB connection
-import helloWorldRoutes from './routes/helloWorldRoutes.js';
-import authRoutes from "./routes/auth.js";
+// Routes
+import authRoutes from "./routes/authRoutes.js";
+import bucketRoutes from "./routes/bucketRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import expenseRoutes from "./routes/expenseRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
+import budgetRoutes from "./routes/budgetRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -32,8 +35,12 @@ app.use(helmet());                              // Security headers
 passportConfig(passport);
 
 // Routes
-app.use('/api/', helloWorldRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/bucket", bucketRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/expenses", expenseRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/budgets", budgetRoutes);
 
 // Health Check
 app.get('/', (req, res) => {
