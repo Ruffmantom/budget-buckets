@@ -28,7 +28,7 @@ const issueTokens = async (user) => {
 const isEmailValid = (email = "") => /\S+@\S+\.\S+/.test(email);
 
 export const register = asyncHandler(async (req, res) => {
-  const { email, full_name, password, birthday, company, contact, user_status, user_role, about } = req.body;
+  const { email, full_name, password } = req.body;
 
   if (!email || !full_name || !password) {
     return res.status(400).json({ message: "Email, full name and password are required" });
@@ -50,12 +50,6 @@ export const register = asyncHandler(async (req, res) => {
       email: email.toLowerCase(),
       full_name,
       password: hashed,
-      birthday,
-      company,
-      contact,
-      user_status,
-      user_role,
-      about
     });
 
     await user.save();
@@ -123,7 +117,7 @@ export const login = asyncHandler((req, res, next) => {
   })(req, res, next);
 });
 
-export const googleCallback = asyncHandler((req, res) => {
+ export const googleCallback = asyncHandler(async (req, res) => {
   const { token, refreshToken } = await issueTokens(req.user);
   res.json({
     message: "Google auth successful",

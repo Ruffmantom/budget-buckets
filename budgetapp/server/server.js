@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 const startCronJob = (name, intervalMs, jobFn) => {
   const run = async () => {
     try {
@@ -24,6 +24,8 @@ mongoose.connect(process.env.MONGO_URI)
       console.log(`[cron:heartbeat] ${new Date().toISOString()}`);
     });
 
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    const baseUrl = process.env.BASE_URL || `http://localhost:${PORT}`;
+
+    app.listen(PORT, () => console.log(`Mongoose Connected & Server running at ${baseUrl}`));
   })
   .catch(err => console.error(err));

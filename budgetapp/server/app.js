@@ -14,6 +14,7 @@ import userRoutes from "./routes/userRoutes.js";
 import expenseRoutes from "./routes/expenseRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import budgetRoutes from "./routes/budgetRoutes.js";
+import { errorHandler, notFoundHandler } from "./helpers/helpers.js";
 
 dotenv.config();
 const app = express();
@@ -46,5 +47,9 @@ app.use("/api/budgets", budgetRoutes);
 app.get('/', (req, res) => {
   res.status(200).json({ message: 'API is running...' });
 });
+
+// Fallbacks and error handling
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;

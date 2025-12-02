@@ -25,7 +25,7 @@ const refreshLimiter = rateLimit({
 });
 
 // Local Register
-router.post("/register", register);
+router.post("/register",register);
 
 // Local Login with rate limiting
 router.post("/login", authLimiter, login);
