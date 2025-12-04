@@ -4,12 +4,14 @@ import {
   getBucketById,
   createBucket,
   updateBucket,
-  deleteBucket
+  deleteBucket,
+  getBucketsByBudget
 } from "../controllers/bucketController.js";
 
 const router = express.Router();
 
 router.route("/").get(getBuckets).post(createBucket);
+router.get("/budget/:budgetId", getBucketsByBudget);
 router
   .route("/:id")
   .get(getBucketById)

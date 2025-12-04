@@ -3,8 +3,29 @@ import Bucket from "../models/Bucket.js";
 
 // GET /api/buckets
 export const getBuckets = asyncHandler(async (req, res) => {
-  const buckets = await Bucket.find().lean();
+  const filter = {};
+  if (req.query.parent_bucket !== undefined) {
+    filter.parent_bucket = req.query.parent_bucket || null;
+  }
+
+  const buckets = await Bucket.find(filter).lean();
   res.status(200).json(buckets);
+});
+
+// GET /api/buckets/budget/:budgetId
+export const getBucketsByBudget = asyncHandler(async (req, res) => {
+  const { budgetId } = req.params;
+
+  if (!budgetId) {
+    return res.status(400).json({ message: "Budget id is required" });
+  }
+
+  const [main_buckets, sub_buckets] = await Promise.all([
+    Bucket.find({ budget: budgetId, parent_bucket: null }).lean(),
+    Bucket.find({ budget: budgetId, parent_bucket: { $ne: null } }).lean()
+  ]);
+
+  res.status(200).json({ main_buckets, sub_buckets });
 });
 
 // GET /api/buckets/:id
@@ -18,7 +39,7 @@ export const getBucketById = asyncHandler(async (req, res) => {
 
 // POST /api/buckets
 export const createBucket = asyncHandler(async (req, res) => {
-  const { title, budget, sub_buckets, amount, is_cash, short_description } = req.body;
+  const { title, budget, parent_bucket, amount, is_cash, short_description } = req.body;
   if (!title) {
     return res.status(400).json({ message: "Title is required" });
   }
@@ -29,48 +50,68 @@ export const createBucket = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Amount is required" });
   }
 
-  const bucket = await Bucket.create({
-    title,
-    budget,
-    sub_buckets,
-    amount,
-    is_cash,
-    short_description
-  });
+  try {
+    const bucket = await Bucket.create({
+      title,
+      budget,
+      parent_bucket,
+      amount,
+      is_cash,
+      short_description
+    });
 
-  res.status(201).json(bucket);
+    return res.status(201).json({
+      message: `[Buckets]: Created a bucket ${bucket.title}`,
+      bucket: bucket
+    });
+  } catch (error) {
+    throw new ApiError(500, "Failed to create user", error?.message || error);
+  }
 });
 
 // PUT /api/buckets/:id
 export const updateBucket = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { title, budget, sub_buckets, amount, is_cash, short_description } = req.body;
+  const { title, budget, parent_bucket, amount, is_cash, short_description } = req.body;
+  try {
+    const bucket = await Bucket.findById(id);
+    if (!bucket) {
+      return res.status(404).json({ message: "Bucket not found" });
+    }
 
-  const bucket = await Bucket.findById(id);
-  if (!bucket) {
-    return res.status(404).json({ message: "Bucket not found" });
+    if (title !== undefined) bucket.title = title;
+    if (budget !== undefined) bucket.budget = budget;
+    if (parent_bucket !== undefined) bucket.parent_bucket = parent_bucket;
+    if (amount !== undefined) bucket.amount = amount;
+    if (is_cash !== undefined) bucket.is_cash = is_cash;
+    if (short_description !== undefined) bucket.short_description = short_description;
+
+    await bucket.save();
+
+    return res.status(201).json({
+      message: `[Buckets]: Updated bucket ${bucket.title}`,
+      bucket: bucket
+    });
+  } catch (error) {
+    throw new ApiError(500, "Failed to create user", error?.message || error);
   }
-
-  if (title !== undefined) bucket.title = title;
-  if (budget !== undefined) bucket.budget = budget;
-  if (sub_buckets !== undefined) bucket.sub_buckets = sub_buckets;
-  if (amount !== undefined) bucket.amount = amount;
-  if (is_cash !== undefined) bucket.is_cash = is_cash;
-  if (short_description !== undefined) bucket.short_description = short_description;
-
-  await bucket.save();
-
-  res.status(200).json(bucket);
 });
 
 // DELETE /api/buckets/:id
 export const deleteBucket = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const bucket = await Bucket.findById(id);
-  if (!bucket) {
-    return res.status(404).json({ message: "Bucket not found" });
-  }
+  try {
+    const bucket = await Bucket.findById(id);
+    if (!bucket) {
+      return res.status(404).json({ message: "Bucket not found" });
+    }
 
-  await bucket.deleteOne();
-  res.status(200).json({ message: "Bucket deleted" });
+    await bucket.deleteOne();
+
+    return res.status(201).json({
+      message: `[Buckets]: Deleted bucket ${bucket.title}`
+    });
+  } catch (error) {
+    throw new ApiError(500, "Failed to create user", error?.message || error);
+  }
 });
