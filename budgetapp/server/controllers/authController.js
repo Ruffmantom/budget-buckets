@@ -55,6 +55,7 @@ export const register = asyncHandler(async (req, res) => {
     await user.save();
 
     const budget = await Budget.create({
+      title: `${full_name.substring(0,2).toUpperCase()}-Budget`,
       creator: user._id,
       connected_users: [user._id]
     });

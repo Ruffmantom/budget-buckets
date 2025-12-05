@@ -76,6 +76,26 @@ const UserSchema = new mongoose.Schema({
   },
   verified_at: {
     type: Date
+  },
+  // Stripe references only—no card/billing details are stored locally
+  stripe_customer_id: {
+    type: String,
+    index: true
+  },
+  stripe_subscription_id: {
+    type: String,
+    index: true
+  },
+  stripe_price_id: {
+    type: String
+  },
+  stripe_subscription_status: {
+    type: String,
+    enum: ["trialing", "active", "past_due", "canceled", "incomplete", "incomplete_expired", "unpaid", "paused"],
+    default: "incomplete"
+  },
+  stripe_current_period_end: {
+    type: Date
   }
 }, { timestamps: true });
 

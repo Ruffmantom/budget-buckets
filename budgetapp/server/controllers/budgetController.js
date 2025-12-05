@@ -55,3 +55,10 @@ export const deleteBudget = asyncHandler(async (req, res) => {
   await budget.deleteOne();
   res.status(200).json({ message: "Budget deleted" });
 });
+
+
+// auth required controllers
+export const getUserAssociatedBudgets = asyncHandler(async(req,res)=>{
+  // return main current Budget
+  // add titles of associated budgets if any
+})
