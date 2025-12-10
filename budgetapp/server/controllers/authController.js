@@ -6,6 +6,7 @@ import crypto from "crypto";
 import User from "../models/User.js";
 import Budget from "../models/Budget.js";
 import Bucket from "../models/Bucket.js";
+import { ApiError } from "../helpers/helpers.js";
 
 const signToken = (user) =>
   jwt.sign(
@@ -55,13 +56,14 @@ export const register = asyncHandler(async (req, res) => {
     await user.save();
 
     const budget = await Budget.create({
-      title: `${full_name.substring(0,2).toUpperCase()}-Budget`,
+      title: `${full_name.substring(0, 2).toUpperCase()}-Budget`,
       creator: user._id,
-      connected_users: [user._id]
+      connected_users: [user._id],
+      can_delete: false
     });
 
     const seedBuckets = [
-      { title: "Monthly Net Income", short_description: "paychecks & deposits" },
+      { title: "Net Income", short_description: "paychecks & deposits", can_delete: false, app_id: "net-income" }, //the app will require this bucket
       { title: "Fundamental", short_description: "Bills / rent / food" },
       { title: "Future", short_description: "Savings & goals" },
       { title: "Fun", short_description: "Dining / travel / movie night" }
@@ -91,7 +93,8 @@ export const register = asyncHandler(async (req, res) => {
       }
     });
   } catch (err) {
-    return res.status(500).json({ message: "Server error" });
+    if (err instanceof ApiError) throw err;
+    throw new ApiError(500, "Failed to Register user and seed DB", err?.message || err);
   }
 });
 
@@ -118,7 +121,7 @@ export const login = asyncHandler((req, res, next) => {
   })(req, res, next);
 });
 
- export const googleCallback = asyncHandler(async (req, res) => {
+export const googleCallback = asyncHandler(async (req, res) => {
   const { token, refreshToken } = await issueTokens(req.user);
   res.json({
     message: "Google auth successful",

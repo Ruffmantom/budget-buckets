@@ -8,11 +8,7 @@ const BudgetSchema = new mongoose.Schema(
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
       default: []
     },
-    theme_mode: {
-      type: String,
-      enum: ["dark", "light", "system"],
-      default: "system"
-    }
+    can_delete: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

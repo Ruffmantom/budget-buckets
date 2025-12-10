@@ -7,7 +7,9 @@ const BucketSchema = new mongoose.Schema(
     parent_bucket: { type: mongoose.Schema.Types.ObjectId, ref: "Bucket", default: null },
     amount: { type: Number, required: true, default: 0 },
     is_cash: { type: Boolean, default: false },
-    short_description: { type: String, default: "" }
+    short_description: { type: String, default: "" },
+    can_delete: { type: Boolean, default: true },
+    app_id: { type: String }
   },
   { timestamps: true }
 );

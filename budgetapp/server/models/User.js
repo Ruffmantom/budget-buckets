@@ -21,17 +21,17 @@ const UserSchema = new mongoose.Schema({
   },
   first_name: {
     type: String,
-    default:"",
+    default: "",
     trim: true
   },
   last_name: {
     type: String,
-    default:"",
+    default: "",
     trim: true
   },
   user_status: {
     type: String,
-    enum: ["pending","active", "inactive", "banned"],
+    enum: ["pending", "active", "inactive", "banned"],
     default: "pending"
   },
   background_color: {
@@ -39,7 +39,7 @@ const UserSchema = new mongoose.Schema({
   },
   user_role: {
     type: String,
-    enum: ["user", "admin","super_admin"],
+    enum: ["user", "admin", "super_admin"],
     default: "user"
   },
   password: {
@@ -96,6 +96,11 @@ const UserSchema = new mongoose.Schema({
   },
   stripe_current_period_end: {
     type: Date
+  },
+  theme_mode: {
+    type: String,
+    enum: ["dark", "light", "system"],
+    default: "system"
   }
 }, { timestamps: true });
 
