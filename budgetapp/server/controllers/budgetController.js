@@ -131,7 +131,43 @@ export const deleteBudget = asyncHandler(async (req, res) => {
 
 
 // auth required controllers
-export const getUserAssociatedBudgets = asyncHandler(async (req, res) => {
+export const getUserBudgets = asyncHandler(async (req, res) => {
+  const { user } = req
   // return main current Budget
   // add titles of associated budgets if any
+  try {
+    let foundBudgets = await Budget.find({ creator: user?._id }) // array
+    let foundCurrentBudget = foundBudgets.find(b => b._id === user.current_selected_budget)
+
+    if (!foundBudgets) {
+      return res.status(404).json({ message: "Internal Server error while fetching Budget. Please contact support." })
+    }
+    if (!foundCurrentBudget && foundBudgets) {
+      // find the buckets for budget
+      let foundBuckets = await Bucket.find({ budget: foundBudgets[0]?._id })
+
+      return res.status(200).json(
+        {
+          message: "Did not find current budget. Defaulted to first budget in list",
+          budget: foundBudgets[0],
+          buckets: foundBuckets
+        }
+      )
+    }
+
+    // if there is a found currently selected budget
+    // find the buckets for budget
+    let foundCurrentBudgetBuckets = await Bucket.find({ budget: foundCurrentBudget?._id })
+
+    return res.status(200).json(
+      {
+        message: "Did not find current budget. Defaulted to first budget in list",
+        budget: foundCurrentBudget,
+        buckets: foundCurrentBudgetBuckets,
+      }
+    )
+  } catch (err) {
+    if (err instanceof ApiError) throw err;
+    throw new ApiError(500, "There was an error deleting your budget. Please contact support.", err?.message || err);
+  }
 })
