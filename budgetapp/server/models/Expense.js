@@ -8,13 +8,14 @@ const ExpenseSchema = new mongoose.Schema(
       ref: "Budget",
       required: true
     },
-    bucket_title: {
+    bucket: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Bucket",
       required: true
     },
-    created_at: { type: Date, default: Date.now },
-    cost: { type: Number, required: true, default: 0 }
+    user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    cost: { type: Number, required: true, default: 0 },
+    expense_date: { type: Date },
   },
   { timestamps: false }
 );

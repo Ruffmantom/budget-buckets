@@ -100,3 +100,12 @@ export const deleteUser = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Failed to delete user", err?.message || err);
   }
 });
+
+export const getUserPlan = asyncHandler(async (req, res) => {
+  try {
+    return res.status(200).json({ usersPlan: req.plan })
+  } catch (err) {
+    if (err instanceof ApiError) throw err;
+    throw new ApiError(500, "Failed to get users current plan.", err?.message || err);
+  }
+});

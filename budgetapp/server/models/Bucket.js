@@ -6,6 +6,7 @@ const BucketSchema = new mongoose.Schema(
     budget: { type: mongoose.Schema.Types.ObjectId, ref: "Budget", required: true },
     parent_bucket: { type: mongoose.Schema.Types.ObjectId, ref: "Bucket", default: null },
     amount: { type: Number, required: true, default: 0 },
+    remaining: { type: Number, required: true, default: 0 },
     is_cash: { type: Boolean, default: false },
     short_description: { type: String, default: "" },
     can_delete: { type: Boolean, default: true },

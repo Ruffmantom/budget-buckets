@@ -78,7 +78,7 @@ const UserSchema = new mongoose.Schema({
     type: Date
   },
   budget_plan: {
-    type: String, enum: ["basic", "advanced"], default: 'basic'
+    type: String, enum: ["free", "basic", "advanced"], default: 'free'
   },
   // Stripe references only—no card/billing details are stored locally
   stripe_customer_id: {

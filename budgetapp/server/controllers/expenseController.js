@@ -3,6 +3,8 @@ import Expense from "../models/Expense.js";
 
 // GET /api/expenses
 export const getExpenses = asyncHandler(async (req, res) => {
+  // find the expenses by the users budget
+
   const expenses = await Expense.find().lean();
   res.status(200).json(expenses);
 });
@@ -18,6 +20,7 @@ export const getExpenseById = asyncHandler(async (req, res) => {
 
 // POST /api/expenses
 export const createExpense = asyncHandler(async (req, res) => {
+  const { user } = req
   const { title, budget, bucket_title, cost, created_at } = req.body;
 
   if (!title || !bucket_title || !budget) {
@@ -27,7 +30,7 @@ export const createExpense = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Cost is required" });
   }
 
-  const expense = await Expense.create({ title, budget, bucket_title, cost, created_at });
+  const expense = await Expense.create({ title, budget, bucket_title, cost, created_at, user_id: user._id });
   res.status(201).json(expense);
 });
 

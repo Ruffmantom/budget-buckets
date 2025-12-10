@@ -14,10 +14,12 @@ class BudgetPlan {
 }
 
 
-const basicPlan = new BudgetPlan("Basic", 1, 2, 1);
-const advancedPlan = new BudgetPlan("Advanced", 2, 2, 10);
+const freePlan = new BudgetPlan("Free", 1, 0, 0);
+const basicPlan = new BudgetPlan("Basic", 2, 2, 1);
+const advancedPlan = new BudgetPlan("Advanced", 3, 3, 5);
 
 export const budgetPlans = [
+    freePlan,
     basicPlan,
     advancedPlan
 ]

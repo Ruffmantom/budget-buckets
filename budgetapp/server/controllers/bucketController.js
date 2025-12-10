@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Bucket from "../models/Bucket.js";
+import { ApiError } from "../helpers/helpers.js";
 
 // GET /api/buckets
 export const getBuckets = asyncHandler(async (req, res) => {
@@ -51,13 +52,21 @@ export const createBucket = asyncHandler(async (req, res) => {
   }
 
   try {
+    let bucketPos = 1
+    // search all sub buckets for parent
+    if (parent_bucket) {
+      let foundSubBuckets = await Bucket.find({ parent_bucket: parent_bucket })
+      bucketPos = foundSubBuckets ? foundSubBuckets.length + 1 : bucketPos
+    }
+
     const bucket = await Bucket.create({
       title,
       budget,
       parent_bucket,
       amount,
       is_cash,
-      short_description
+      short_description,
+      position: bucketPos
     });
 
     return res.status(201).json({
@@ -65,14 +74,14 @@ export const createBucket = asyncHandler(async (req, res) => {
       bucket: bucket
     });
   } catch (error) {
-    throw new ApiError(500, "Failed to create user", error?.message || error);
+    throw new ApiError(500, "Failed to create Bucket", error?.message || error);
   }
 });
 
 // PUT /api/buckets/:id
 export const updateBucket = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { title, budget, parent_bucket, amount, is_cash, short_description } = req.body;
+  const { title, budget, parent_bucket, amount, is_cash, short_description, remaining, position } = req.body;
   try {
     const bucket = await Bucket.findById(id);
     if (!bucket) {
@@ -83,6 +92,8 @@ export const updateBucket = asyncHandler(async (req, res) => {
     if (budget !== undefined) bucket.budget = budget;
     if (parent_bucket !== undefined) bucket.parent_bucket = parent_bucket;
     if (amount !== undefined) bucket.amount = amount;
+    if (remaining !== undefined) bucket.remaining = remaining;
+    if (position !== undefined) bucket.position = position;
     if (is_cash !== undefined) bucket.is_cash = is_cash;
     if (short_description !== undefined) bucket.short_description = short_description;
 
@@ -93,7 +104,7 @@ export const updateBucket = asyncHandler(async (req, res) => {
       bucket: bucket
     });
   } catch (error) {
-    throw new ApiError(500, "Failed to create user", error?.message || error);
+    throw new ApiError(500, "Failed to update bucket", error?.message || error);
   }
 });
 
@@ -112,6 +123,6 @@ export const deleteBucket = asyncHandler(async (req, res) => {
       message: `[Buckets]: Deleted bucket ${bucket.title}`
     });
   } catch (error) {
-    throw new ApiError(500, "Failed to create user", error?.message || error);
+    throw new ApiError(500, "Failed to delete bucket", error?.message || error);
   }
 });
