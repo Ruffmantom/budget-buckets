@@ -1,15 +1,15 @@
 import express from "express";
 import {
-  getExpenses,
-  getExpenseById,
+  getUserExpenses,
   createExpense,
   updateExpense,
   deleteExpense
 } from "../controllers/expenseController.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.route("/").get(getExpenses).post(createExpense);
-router.route("/:id").get(getExpenseById).put(updateExpense).delete(deleteExpense);
+router.route("/").get(protect, getUserExpenses).post(protect, createExpense);
+router.route("/:id").put(updateExpense).delete(deleteExpense);
 
 export default router;

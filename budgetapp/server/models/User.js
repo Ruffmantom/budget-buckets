@@ -37,9 +37,7 @@ const UserSchema = new mongoose.Schema({
   background_color: {
     type: String,
   },
-  current_selected_budget: {
-    type: { type: mongoose.Schema.Types.ObjectId, ref: "Budget" },
-  },
+  current_selected_budget:{ type: mongoose.Schema.Types.ObjectId, ref: "Budget" },
   user_role: {
     type: String,
     enum: ["user", "admin", "super_admin"],

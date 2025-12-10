@@ -106,7 +106,7 @@ export const deleteBudget = asyncHandler(async (req, res) => {
     // delete budget
     await budget.deleteOne();
 
-    let foundBudgetsForUser = Budget.find({ creator: user._id }) // returns array
+    let foundBudgetsForUser = await Budget.find({ creator: user._id }) // returns array
     // set budget as selected budget for user
     let foundUser = await User.findById(user._id)
     if (!foundUser) {
@@ -137,18 +137,20 @@ export const getUserBudgets = asyncHandler(async (req, res) => {
   // add titles of associated budgets if any
   try {
     let foundBudgets = await Budget.find({ creator: user?._id }) // array
-    let foundCurrentBudget = foundBudgets.find(b => b._id === user.current_selected_budget)
+    const currentBudgetId = user.current_selected_budget?._id || user.current_selected_budget?.type || user.current_selected_budget
+    let foundCurrentBudget = foundBudgets.find(b => b._id.toString() === currentBudgetId?.toString())
 
-    if (!foundBudgets) {
+    if (!foundBudgets || foundBudgets.length === 0) {
       return res.status(404).json({ message: "Internal Server error while fetching Budget. Please contact support." })
     }
-    if (!foundCurrentBudget && foundBudgets) {
+    if (!foundCurrentBudget) {
       // find the buckets for budget
       let foundBuckets = await Bucket.find({ budget: foundBudgets[0]?._id })
 
       return res.status(200).json(
         {
           message: "Did not find current budget. Defaulted to first budget in list",
+          usersBudgets: foundBudgets,
           budget: foundBudgets[0],
           buckets: foundBuckets
         }
@@ -161,7 +163,8 @@ export const getUserBudgets = asyncHandler(async (req, res) => {
 
     return res.status(200).json(
       {
-        message: "Did not find current budget. Defaulted to first budget in list",
+        message: "Found Budget for user",
+        usersBudgets: foundBudgets,
         budget: foundCurrentBudget,
         buckets: foundCurrentBudgetBuckets,
       }
