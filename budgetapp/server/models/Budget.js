@@ -4,7 +4,7 @@ const BudgetSchema = new mongoose.Schema(
   {
     title: String,
     creator: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    connected_users: {
+    linked_users: {
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
       default: []
     },

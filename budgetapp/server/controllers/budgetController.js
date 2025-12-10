@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Budget from "../models/Budget.js";
+import { ApiError } from "../helpers/helpers.js";
 
 // GET /api/budgets
 export const getBudgets = asyncHandler(async (req, res) => {
@@ -18,13 +19,38 @@ export const getBudgetById = asyncHandler(async (req, res) => {
 
 // POST /api/budgets
 export const createBudget = asyncHandler(async (req, res) => {
-  const { creator, connected_users, theme_mode } = req.body;
-  if (!creator) {
+  const { title } = req.body;
+  const { user, plan } = req;
+
+
+  if (!title) {
+    return res.status(400).json({ message: "Title is required" });
+  }
+  if (!user) {
     return res.status(400).json({ message: "Creator is required" });
   }
 
-  const budget = await Budget.create({ creator, connected_users, theme_mode });
-  res.status(201).json(budget);
+  try {
+    // check if the plan allows a new budget for the user
+    const foundBudgetsForUser = await Budget.find({ creator: user._id })
+    // there should always be at least one budget for the user that can not be deleted
+    // check it user is at max budgets
+    let foundUsersBudgetLength = foundBudgetsForUser.length
+    if (foundBudgetsForUser.length === plan.allowedBudgets) {
+      return res.status(500).json({ message: "You have reached your max limit of budgets. Please upgrade your plan to access more features." })
+    }
+    // this should not happen in production unless maybe a user upgraded their account and then downgraded. in that case we will need to add that fix when they downgrade.
+    if (foundUsersBudgetLength > plan.allowedBudgets) {
+      return res.status(500).json({ message: "You somehow surpassed your max number of allowed budgets for your plan. Please upgrade to gain more features." })
+    }
+
+
+    const budget = await Budget.create({ creator: user._id, title });
+    return res.status(201).json(budget);
+  } catch (err) {
+    if (err instanceof ApiError) throw err;
+    throw new ApiError(500, "Failed to create budget", err?.message || err);
+  }
 });
 
 // PUT /api/budgets/:id
@@ -35,9 +61,9 @@ export const updateBudget = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "Budget not found" });
   }
 
-  const { creator, connected_users, theme_mode } = req.body;
+  const { creator, linked_users, theme_mode } = req.body;
   if (creator !== undefined) budget.creator = creator;
-  if (connected_users !== undefined) budget.connected_users = connected_users;
+  if (linked_users !== undefined) budget.linked_users = linked_users;
   if (theme_mode !== undefined) budget.theme_mode = theme_mode;
 
   await budget.save();
@@ -58,7 +84,7 @@ export const deleteBudget = asyncHandler(async (req, res) => {
 
 
 // auth required controllers
-export const getUserAssociatedBudgets = asyncHandler(async(req,res)=>{
+export const getUserAssociatedBudgets = asyncHandler(async (req, res) => {
   // return main current Budget
   // add titles of associated budgets if any
 })

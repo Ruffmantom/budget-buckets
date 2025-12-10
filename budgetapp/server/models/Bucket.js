@@ -9,7 +9,8 @@ const BucketSchema = new mongoose.Schema(
     is_cash: { type: Boolean, default: false },
     short_description: { type: String, default: "" },
     can_delete: { type: Boolean, default: true },
-    app_id: { type: String }
+    app_id: { type: String },
+    position: { type: Number, default: 0 }
   },
   { timestamps: true }
 );

@@ -41,7 +41,7 @@ app.use("/api/bucket", bucketRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/notifications", notificationRoutes);
-app.use("/api/budgets", budgetRoutes);
+app.use("/api/budget", budgetRoutes);
 
 // Health Check
 app.get('/', (req, res) => {

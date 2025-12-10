@@ -77,6 +77,9 @@ const UserSchema = new mongoose.Schema({
   verified_at: {
     type: Date
   },
+  budget_plan: {
+    type: String, enum: ["basic", "advanced"], default: 'basic'
+  },
   // Stripe references only—no card/billing details are stored locally
   stripe_customer_id: {
     type: String,
