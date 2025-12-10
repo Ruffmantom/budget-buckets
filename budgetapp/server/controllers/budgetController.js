@@ -1,14 +1,18 @@
 import asyncHandler from "express-async-handler";
 import Budget from "../models/Budget.js";
+import Bucket from "../models/Bucket.js";
 import { ApiError } from "../helpers/helpers.js";
+import User from "../models/User.js";
 
 // GET /api/budgets
+// for super admin later on past MVP
 export const getBudgets = asyncHandler(async (req, res) => {
   const budgets = await Budget.find().lean();
   res.status(200).json(budgets);
 });
 
 // GET /api/budgets/:id
+// for super admin later on past MVP
 export const getBudgetById = asyncHandler(async (req, res) => {
   const budget = await Budget.findById(req.params.id).lean();
   if (!budget) {
@@ -44,8 +48,18 @@ export const createBudget = asyncHandler(async (req, res) => {
       return res.status(500).json({ message: "You somehow surpassed your max number of allowed budgets for your plan. Please upgrade to gain more features." })
     }
 
-
     const budget = await Budget.create({ creator: user._id, title });
+
+    // set budget as selected budget for user
+    let foundUser = await User.findById(user._id)
+    if (!foundUser) {
+      return res.status(404).json({ message: "User Not found" })
+    }
+    // update selected budget
+    foundUser.current_selected_budget = budget._id
+    // save user
+    await foundUser.save()
+
     return res.status(201).json(budget);
   } catch (err) {
     if (err instanceof ApiError) throw err;
@@ -56,30 +70,63 @@ export const createBudget = asyncHandler(async (req, res) => {
 // PUT /api/budgets/:id
 export const updateBudget = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const budget = await Budget.findById(id);
-  if (!budget) {
-    return res.status(404).json({ message: "Budget not found" });
+  const { title } = req.body;
+  try {
+    const budget = await Budget.findById(id);
+    if (!budget) {
+      return res.status(404).json({ message: "Budget not found" });
+    }
+
+    if (title !== undefined) budget.title = title;
+
+    await budget.save();
+    return res.status(200).json(budget);
+  } catch (err) {
+    if (err instanceof ApiError) throw err;
+    throw new ApiError(500, "There was an error updating your budget. Please contact support.", err?.message || err);
   }
-
-  const { creator, linked_users, theme_mode } = req.body;
-  if (creator !== undefined) budget.creator = creator;
-  if (linked_users !== undefined) budget.linked_users = linked_users;
-  if (theme_mode !== undefined) budget.theme_mode = theme_mode;
-
-  await budget.save();
-  res.status(200).json(budget);
 });
 
 // DELETE /api/budgets/:id
 export const deleteBudget = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const budget = await Budget.findById(id);
-  if (!budget) {
-    return res.status(404).json({ message: "Budget not found" });
-  }
+  const { user } = req;
 
-  await budget.deleteOne();
-  res.status(200).json({ message: "Budget deleted" });
+  try {
+    const budget = await Budget.findById(id);
+    if (!budget) {
+      return res.status(404).json({ message: "Budget not found" });
+    }
+    if (!budget.can_delete) {
+      return res.status(403).json({ message: "Sorry this budget may not be deleted" });
+    }
+
+    // delete all the buckets for that budget.
+    await Bucket.deleteMany({ budget: budget._id })
+    // delete budget
+    await budget.deleteOne();
+
+    let foundBudgetsForUser = Budget.find({ creator: user._id }) // returns array
+    // set budget as selected budget for user
+    let foundUser = await User.findById(user._id)
+    if (!foundUser) {
+      return res.status(404).json({ message: "User Not found" })
+    }
+    // update selected budget
+    foundUser.current_selected_budget = foundBudgetsForUser[0]?._id
+    // save user
+    await foundUser.save()
+
+    return res.status(200).json(
+      {
+        budget: "here", // need to include budget data and buckets to allow frontend to load in newly selected budget after deletion 
+        message: "Budget has been deleted"
+      });
+
+  } catch (err) {
+    if (err instanceof ApiError) throw err;
+    throw new ApiError(500, "There was an error deleting your budget. Please contact support.", err?.message || err);
+  }
 });
 
 

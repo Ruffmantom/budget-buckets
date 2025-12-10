@@ -11,7 +11,7 @@ import { findUserPlan } from "../middleware/helperMiddleware.js";
 
 const router = express.Router();
 
-router.route("/").get(getBudgets).post(protect, findUserPlan, createBudget);
-router.route("/:id").get(getBudgetById).put(updateBudget).delete(deleteBudget);
+router.route("/").get(protect, getBudgets).post(protect, findUserPlan, createBudget);
+router.route("/:id").get(protect, getBudgetById).put(protect, updateBudget).delete(protect, deleteBudget);
 
 export default router;

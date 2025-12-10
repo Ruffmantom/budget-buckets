@@ -7,7 +7,7 @@ const NotificationSchema = new mongoose.Schema(
     message: { type: String, required: true, trim: true },
     type: {
       type: String,
-      enum: ["info", "success", "warning", "error"],
+      enum: ["info", "success", "warning", "error", "invite"],
       default: "info"
     },
     data: { type: mongoose.Schema.Types.Mixed },
