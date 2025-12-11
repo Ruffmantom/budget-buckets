@@ -13,30 +13,30 @@ export const getBuckets = asyncHandler(async (req, res) => {
   res.status(200).json(buckets);
 });
 
-// GET /api/buckets/budget/:budgetId
-export const getBucketsByBudget = asyncHandler(async (req, res) => {
-  const { budgetId } = req.params;
+// // GET /api/buckets/budget/:budgetId
+// export const getBucketsByBudget = asyncHandler(async (req, res) => {
+//   const { budgetId } = req.params;
 
-  if (!budgetId) {
-    return res.status(400).json({ message: "Budget id is required" });
-  }
+//   if (!budgetId) {
+//     return res.status(400).json({ message: "Budget id is required" });
+//   }
 
-  const [main_buckets, sub_buckets] = await Promise.all([
-    Bucket.find({ budget: budgetId, parent_bucket: null }).lean(),
-    Bucket.find({ budget: budgetId, parent_bucket: { $ne: null } }).lean()
-  ]);
+//   const [main_buckets, sub_buckets] = await Promise.all([
+//     Bucket.find({ budget: budgetId, parent_bucket: null }).lean(),
+//     Bucket.find({ budget: budgetId, parent_bucket: { $ne: null } }).lean()
+//   ]);
 
-  res.status(200).json({ main_buckets, sub_buckets });
-});
+//   res.status(200).json({ main_buckets, sub_buckets });
+// });
 
-// GET /api/buckets/:id
-export const getBucketById = asyncHandler(async (req, res) => {
-  const bucket = await Bucket.findById(req.params.id).lean();
-  if (!bucket) {
-    return res.status(404).json({ message: "Bucket not found" });
-  }
-  res.status(200).json(bucket);
-});
+// // GET /api/buckets/:id
+// export const getBucketById = asyncHandler(async (req, res) => {
+//   const bucket = await Bucket.findById(req.params.id).lean();
+//   if (!bucket) {
+//     return res.status(404).json({ message: "Bucket not found" });
+//   }
+//   res.status(200).json(bucket);
+// });
 
 // POST /api/buckets
 export const createBucket = asyncHandler(async (req, res) => {
@@ -122,6 +122,23 @@ export const deleteBucket = asyncHandler(async (req, res) => {
     return res.status(201).json({
       message: `[Buckets]: Deleted bucket ${bucket.title}`
     });
+  } catch (error) {
+    throw new ApiError(500, "Failed to delete bucket", error?.message || error);
+  }
+});
+
+
+export const clearSubBuckets = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  try {
+    // get the main bucket
+    const foundParent = await Bucket.findById({ id })
+    const foundSubBuckets = await Bucket.find({ parent_bucket: id })
+    if (!foundSubBuckets) {
+      return res.status(404).json({ message: "There are no sub buckets to delete" })
+    }
+    await Bucket.deleteMany({ parent_bucket: id })
+    return res.status(200).json({ message: `Deleted ${foundSubBuckets.length} sub bucket${foundSubBuckets.length > 1 ? "s" : ""} for ${foundParent.title}` })
   } catch (error) {
     throw new ApiError(500, "Failed to delete bucket", error?.message || error);
   }
