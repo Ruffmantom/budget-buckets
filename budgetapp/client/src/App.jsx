@@ -1,31 +1,13 @@
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useHelloStore from "./store/helloStore.js";
-import ButtonLink from "./components/common/buttonLink.jsx";
-import ButtonAction from "./components/common/ButtonAction.jsx";
-import FormInput from "./components/common/FormInput.jsx";
-import Tooltip from "./components/common/Tooltip.jsx";
-import Info from "./components/common/Info.jsx";
-import InfoAlert from "./components/common/InfoAlert.jsx";
-import TopNavigation from "./components/common/TopNavigation.jsx";
+// pages
+import WelcomePage from "./pages/auth/WelcomePage.jsx"
 // testing
 function App() {
-  const { getHello } = useHelloStore();
-  const [nameInputValue, setNameInputValue] = useState("");
 
-  const handleHelloButtonClick = async (e) => {
-    e.preventDefault();
-    const response = await getHello(nameInputValue);
 
-    if (response?.data?.message) {
-      toast.success(response.data.message, {
-        position: "top-center",
-      }); // uses react-toastify
-      setNameInputValue("");
-    }
-  };
 
   return (
     <>
@@ -36,9 +18,7 @@ function App() {
             exact
             path="/"
             element={
-              <div className="w-full flex flex-col p-2">
-                <TopNavigation/>
-              </div>
+              <WelcomePage/>
             }
           />
 
